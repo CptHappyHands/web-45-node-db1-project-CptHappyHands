@@ -3,7 +3,7 @@ const Account = require("./accounts-model");
 
 function checkAccountPayload(req, res, next) {
   const { name, budget } = req.body;
-  if (!name || !budget) {
+  if (name === undefined || budget === undefined) {
     res.status(400).json({ message: "name and budget are required" });
   } else if (typeof name !== "string") {
     res.status(400).json({ message: "name of account must be a string" });
@@ -39,7 +39,7 @@ async function checkAccountNameUnique(req, res, next) {
 
 async function checkAccountId(req, res, next) {
   try {
-    const account = await Account.getById(req.params.id);
+    const account = await db("accounts").where("id", req.params.id);
     if (!account) {
       next({ status: 404, message: "account not found" });
     } else {

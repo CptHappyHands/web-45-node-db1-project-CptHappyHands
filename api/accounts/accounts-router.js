@@ -1,6 +1,10 @@
 const express = require("express");
-const { checkAccountPayload } = require("./accounts-middleware");
 const Account = require("./accounts-model");
+const {
+  checkAccountPayload,
+  checkAccountId,
+  checkAccountNameUnique,
+} = require("./accounts-middleware");
 
 const router = express.Router();
 
@@ -13,9 +17,19 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.get("/:id", checkAccountPayload, (req, res, next) => {
-  // DO YOUR MAGIC
-});
+router.get(
+  "/:id",
+  checkAccountPayload,
+  checkAccountId,
+  async (req, res, next) => {
+    try {
+      const data = await Account.getById(req.params.id);
+      res.json(data);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 router.post("/", (req, res, next) => {
   // DO YOUR MAGIC
