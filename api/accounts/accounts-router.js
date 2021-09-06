@@ -17,29 +17,28 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.get(
-  "/:id",
+router.get("/:id", checkAccountId, async (req, res, next) => {
+  try {
+    const data = await Account.getById(req.params.id);
+    res.json(data);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post(
+  "/",
   checkAccountPayload,
-  checkAccountId,
+  checkAccountNameUnique,
   async (req, res, next) => {
     try {
-      const data = await Account.getById(req.params.id);
-      res.json(data);
+      const newAccount = await Account.create(req.body);
+      res.status(201).json(newAccount);
     } catch (err) {
       next(err);
     }
   }
 );
-
-router.post("/", checkAccountPayload, (req, res, next) => {
-  Account.create({ account: req.account })
-    .then((newAccount) => {
-      res.status(201).json(newAccount.trim());
-    })
-    .catch((err) => {
-      next(err);
-    });
-});
 
 router.put(
   "/:id",

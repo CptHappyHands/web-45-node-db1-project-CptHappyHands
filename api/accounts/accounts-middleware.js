@@ -18,8 +18,7 @@ function checkAccountPayload(req, res, next) {
       .status(400)
       .json({ message: "budget of account is too large or too small" });
   } else {
-    req.body.name = name;
-
+    req.body.name = name.trim();
     next();
   }
 }
@@ -31,6 +30,8 @@ async function checkAccountNameUnique(req, res, next) {
       .first();
     if (accountName) {
       next({ status: 400, message: "that name is taken" });
+    } else {
+      next();
     }
   } catch (err) {
     next(err);
