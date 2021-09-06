@@ -1,4 +1,5 @@
 const express = require("express");
+const { checkAccountPayload } = require("./accounts-middleware");
 const Account = require("./accounts-model");
 
 const router = express.Router();
@@ -12,7 +13,7 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.get("/:id", (req, res, next) => {
+router.get("/:id", checkAccountPayload, (req, res, next) => {
   // DO YOUR MAGIC
 });
 
