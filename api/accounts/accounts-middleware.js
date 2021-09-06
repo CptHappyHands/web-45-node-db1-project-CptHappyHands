@@ -39,11 +39,12 @@ async function checkAccountNameUnique(req, res, next) {
 
 async function checkAccountId(req, res, next) {
   try {
-    const account = await db("accounts").where("id", req.params.id);
+    const account = await Account.getById(req.params.id);
     if (!account) {
       next({ status: 404, message: "account not found" });
     } else {
       req.account = account;
+      next();
     }
   } catch (err) {
     next(err);

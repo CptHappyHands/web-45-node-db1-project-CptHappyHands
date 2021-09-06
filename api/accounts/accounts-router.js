@@ -31,16 +31,37 @@ router.get(
   }
 );
 
-router.post("/", (req, res, next) => {
-  // DO YOUR MAGIC
+router.post("/", checkAccountPayload, (req, res, next) => {
+  Account.create({ account: req.account })
+    .then((newAccount) => {
+      res.status(201).json(newAccount.trim());
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
 
-router.put("/:id", (req, res, next) => {
-  // DO YOUR MAGIC
-});
+router.put(
+  "/:id",
+  checkAccountPayload,
+  checkAccountId,
+  async (req, res, next) => {
+    try {
+      const accountData = await Account.updateById(req.params.id, req.body);
+      res.json(accountData);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
-router.delete("/:id", (req, res, next) => {
-  // DO YOUR MAGIC
+router.delete("/:id", checkAccountPayload, async (req, res, next) => {
+  try {
+    const accountData = await Account.deleteById(req.params.id);
+    res.json(accountData);
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.use((err, req, res, next) => {
